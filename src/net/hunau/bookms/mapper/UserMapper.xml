@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hunau.bookms.mapper.UserMapper">
+	<!-- 更新用户余额 -->
+ 	<update id="updateUserBalance" parameterType="user">
+ 		update reader set balance = #{balance} where userNo = #{userNo};
+ 	</update>
+</mapper>

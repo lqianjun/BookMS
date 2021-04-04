@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hunau.bookms.mapper.FeedbackMapper">
+	<!-- 查找所有反馈信息 -->
+	<select id="getAllFeedback" resultType="net.hunau.bookms.bean.Feedback">
+		select userNo,date,content,handle from feedback;
+	</select>
+	
+	<!-- 根据feedid查找信息 -->
+	<select id="getFeedbackById" parameterType="int" resultType="net.hunau.bookms.bean.Feedback">
+		select feedid,userNo,date,content,handle from feedback where feedid=#{feedid};
+	</select>
+	
+	<!-- 查找所有未读反馈信息 -->
+	<select id="getUnReadedFeedback()" resultType="net.hunau.bookms.bean.Feedback">
+		SELECT userNo,DATE,content,handle FROM feedback WHERE handle='0';
+	</select>
+	
+	<!-- 添加用户反馈  -->
+	<insert id="addFeedback" parameterType="net.hunau.bookms.bean.Feedback">
+		insert into feedback(feedid,userNo,date,content,handle) values(#{feedid},#{userNo},now(),#{content},#{handle});
+	</insert>
+	
+	<!-- 编辑反馈 -->
+	<update id="updateFeedback" parameterType="net.hunau.bookms.bean.Feedback">
+		UPDATE feedback SET handle=1 WHERE feedid=#{feedid};
+	</update>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hunau.bookms.mapper.BookMapper">
+ 	<!-- 按书籍类型名查询图书 -->
+	  <select id="getBookByBookTypeName" parameterType="String" resultType="net.hunau.bookms.bean.Book">
+  		select barcode,bookName,author,book.bookTypeId ,location,price,publish,publishDate,introduction
+			from booktype,book 
+				where booktype.bookTypeId=book.bookTypeId 
+					AND bookTypeName=#{bookTypeName};
+	</select>
+	
+	<!-- 按书籍名称查询书籍信息 -->
+	<select id="getBookInfoByBookName" parameterType="String" resultType="net.hunau.bookms.bean.Book">
+		SELECT * FROM book WHERE bookName=#{bookName};
+	</select>
+	
+	<!-- 按书籍条码查询书籍信息 -->
+	<select id="getBookInfoByBarcode" parameterType="String" resultType="net.hunau.bookms.bean.Book">
+		SELECT * FROM book WHERE barcode=#{barcode};
+	</select>
+	
+	<!-- 查询所有图书 -->
+	<select id="getBookInfoAll"  resultType="net.hunau.bookms.bean.Book">
+		SELECT * FROM book;
+	</select>
+	
+	<!-- 添加图书  -->
+	<insert id="addBook" parameterType="net.hunau.bookms.bean.Book">
+		insert into book(barcode,bookName,author,bookTypeId,
+		location,lend,price,publish,publishDate,introduction,tbarcode,damage) 
+		values (#{barcode},#{bookName},#{author},#{bookTypeId},
+		#{location},#{lend},#{price},#{publish},#{publishDate},#{introduction},#{tbarcode},#{damage});
+	</insert>
+	<!-- 编辑图书 -->
+	<update id="updateBook" parameterType="net.hunau.bookms.bean.Book">
+		update book set 
+						bookName=#{bookName},
+						author=#{author},
+						location=#{location},
+						lend=#{lend},
+						price=#{price},
+						publish=#{publish},
+						publishDate=#{publishDate},
+						introduction=#{introduction}
+			        where barcode = #{barcode};
+	</update>
+	<select id="isRightBookTypeId" parameterType="String" resultType="net.hunau.bookms.bean.BookType">
+	   SELECT * FROM booktype WHERE booktypeid=#{booktypeid};
+	</select>
+	
+	<!-- 根据书籍名称模糊查询书籍 -->
+	 <select id="getBookByName" parameterType="String" resultType="net.hunau.bookms.bean.SearchBook">
+	      select tbarcode,bookName,author,bookTypeId,location,lend,count(tbarcode) amount,introduction
+		  FROM book where bookName like "%"#{bookName}"%"
+		  group by tbarcode;
+	</select>
+	
+	<!-- 根据书籍类型名模糊查询书籍 -->
+	<select id="getBookByTypeName" parameterType="String" resultType="net.hunau.bookms.bean.SearchBook">
+	      select tbarcode,bookName,author,bookTypeId,location,count(tbarcode) amount,introduction
+			from book where bookTypeId in (
+				select bookTypeId from booktype where bookTypeName like "%"#{bookTypeName}"%"
+			)
+		  group by tbarcode;
+	</select>
+	<!-- 查看全部书籍 -->
+	<select id="getAllBook" parameterType="String" resultType="net.hunau.bookms.bean.SearchBook">
+	     select tbarcode,bookName,author,bookTypeId,location,count(tbarcode) amount,introduction from book group by tbarcode;
+	</select>
+	<!-- 二级条码查书 -->
+	<select id="getSecondBook" parameterType="String" resultType="net.hunau.bookms.bean.SecondFindBook">
+		select barcode,bookName,author,price,publish,publishDate,damage,lend from book where tbarcode =#{tbarcode};
+	</select>
+</mapper>

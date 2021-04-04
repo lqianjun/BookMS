@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hunau.bookms.mapper.LoanInfosMapper">
+	<!-- 查找userNo所有借阅信息 -->
+	<select id="getAllBorrow" parameterType="string" resultType="loanInfos">
+		select loaninId,barcode,bookname,userNo,
+		truename,borrowDate,returnDate,deadline,
+		if( returnDate is null,datediff(now(),deadline),overtime) as overtime,
+		if(returnDate is null,datediff(now(),deadline)*1,fine) as fine 
+		from loaninfo where userNo=#{userNo};
+	</select>
+	
+	<!-- 查找userNo未归还的日期借阅信息 -->
+	<select id="getNOReturn" parameterType="string" resultType="loanInfos">
+	   select loaninId,barcode,bookname,userNo,
+	   truename,borrowDate,returnDate,deadline,
+	   if( returnDate is null,datediff(now(),deadline),overtime) as overtime,
+	   if(returnDate is null,datediff(now(),deadline)*1,fine) as fine
+	    from loaninfo where userNo='201644454896' and returnDate is null;
+	</select>
+	
+	<!-- 根据还书的编号和useNo查询要还书的条记录 -->
+	<select id="getBorrow" parameterType="loanInfos" resultType="loanInfos">
+		select loaninId,barcode,bookname,userNo,
+		truename,borrowDate,returnDate,deadline,
+		if( returnDate is null,datediff(now(),deadline),overtime) as overtime,
+		if(returnDate is null,datediff(now(),deadline)*1,fine) as fine 
+		from loaninfo where userNo=#{userNo} 
+		and returnDate is null 
+		and barcode =#{barcode};	
+	</select>
+	
+	<!-- 归还书籍更新借阅记录 -->
+	<update id="updateReturnBook" parameterType="loanInfos">
+			update loaninfo set returnDate = curdate(),
+			 	overtime = datediff(now(),deadline), 
+			 	fine = #{fine}
+			 where userNo=#{userNo} 
+			 	and returnDate is null 
+			 	and barcode =#{barcode};
+	</update>
+	
+	<!-- 书籍借出增加一条记录 -->
+	<insert id="borrowOneBookSuccess" parameterType="loanInfos">
+		insert  into `loaninfo`
+		(`barcode`,`bookname`,`userNo`,`truename`,`borrowDate`,`returnDate`,`deadline`,`overtime`,`fine`) 
+		values 
+		(#{barcode},#{bookname},#{userNo},#{truename},curdate(),null,date_add(now(),interval 30 day),0,0);
+	</insert>
+</mapper>

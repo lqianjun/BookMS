@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration  
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-config.dtd">  
+<!-- 配置文件的根元素 -->  
+<configuration>  
+   <!-- 指定MyBatis所用日志的具体实现 -->
+    <settings>
+      <setting name="logImpl" value="LOG4J"/>
+      <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+    <!-- 别名设置 -->
+    <typeAliases>
+    	<typeAlias alias="loanInfos" type="net.hunau.bookms.bean.LoanInfos"/>
+    	<typeAlias alias="user" type="net.hunau.bookms.bean.User"/>
+    </typeAliases>
+    <!-- 环境：配置mybatis的环境 -->  
+    <environments default="mysql">  
+       <!-- 环境变量：可以配置多个环境变量，比如使用多数据源时，就需要配置多个环境变量 -->  
+       <environment id="mysql">  
+       <!-- 指定事务管理类型，type="JDBC"指直接简单使用了JDBC的提交和回滚设置 -->
+       <transactionManager type="JDBC"/> 
+          <!-- 数据源 -->  
+          <dataSource type="POOLED">
+          <!-- 数据库的驱动和URL，用户名和密码 -->
+          <property name="driver" value="com.mysql.jdbc.Driver"/>
+          <property name="url" value="jdbc:mysql://127.0.0.1:3306/bookms"/>
+          <property name="username" value="qianjun"/>
+          <property name="password" value="lqjkok6666"/>
+          </dataSource>  
+       </environment>   
+    </environments>   
+    <!-- 映射器：指定映射文件或者映射类 -->  
+    <mappers>
+      <mapper resource="net/hunau/bookms/mapper/BookMapper.xml"/>
+      <mapper resource="net/hunau/bookms/mapper/LoanInfosMapper.xml"/>
+      <mapper resource="net/hunau/bookms/mapper/UserMapper.xml"/>
+    </mappers>  
+</configuration>  
